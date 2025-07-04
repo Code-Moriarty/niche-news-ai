@@ -1,0 +1,17 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+  <div style="text-align: center; padding: 4rem 0;">
+    <h1 style="font-size: 3rem;">Effortless Newsletters for Any Niche</h1>
+    <p style="font-size: 1.25rem;" class="secondary">Stop searching for content. Start creating with AI.</p>
+    <a href="{% url 'signup' %}" role="button" style="font-size: 1.25rem;">Get Started for Free</a>
+  </div>
+  <article>
+      <h3>How It Works</h3>
+      <ol>
+          <li><strong>Choose Your Niche:</strong> Enter any topic you're passionate about, from vintage synths to urban gardening.</li>
+          <li><strong>Generate with AI:</strong> With one click, our AI scans the web for the latest news and trends, then drafts a compelling newsletter for you.</li>
+          <li><strong>Publish and Grow:</strong> Copy your ready-to-send draft and share it with your audience.</li>
+      </ol>
+  </article>
+{% endblock %}

@@ -1,19 +1,41 @@
 {% extends "core/base.html" %}
+{% load markdownify %}
 
 {% block content %}
-  <a href="{% url 'home' %}">&larr; Back</a>
+  <a href="{% url 'home' %}">&larr; Back to Dashboard</a>
   <article>
-    <h2>{{ niche.name }}</h2>
-    <form method="post">
+    <header>
+      <h2>{{ niche.name }}</h2>
+    </header>
+    <form method="post" id="generate-form">
       {% csrf_token %}
-      <button type="submit">Generate Newsletter</button>
+      <button type="submit" id="generate-button">Generate New Newsletter Draft</button>
+      <p id="loading-message" style="display: none;">
+        <em>Generating your newsletter with AI... Please wait.</em>
+      </p>
     </form>
   </article>
 
   {% for newsletter in newsletters %}
     <article>
-      <small>Created: {{ newsletter.created_at|date:"F j, Y, P" }}</small>
-      <div style="white-space: pre-line;">{{ newsletter.content }}</div>
+      <header>
+        <small>Generated on: {{ newsletter.created_at|date:"F j, Y, P" }}</small>
+      </header>
+      {{ newsletter.content|markdownify }}
     </article>
+  {% empty %}
+    <p>No newsletters generated yet. Hit "Generate" to create your first one.</p>
   {% endfor %}
+
+  <script>
+    document.getElementById('generate-form').addEventListener('submit', function() {
+      const button = document.getElementById('generate-button');
+      const loadingMsg = document.getElementById('loading-message');
+
+      button.setAttribute('disabled', 'true');
+      button.innerText = 'Generating...';
+      loadingMsg.style.display = 'block';
+    });
+  </script>
 {% endblock %}
+
