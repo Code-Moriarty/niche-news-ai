@@ -18,7 +18,7 @@
     <h4>Your Niches</h4>
     <ul>
       {% for niche in niches %}
-        <li>{{ niche.name }}</li>
+        <li><a href="{% url 'niche_detail' pk=niche.pk %}">{{ niche.name }}</a></li>
       {% endfor %}
     </ul>
   </article>

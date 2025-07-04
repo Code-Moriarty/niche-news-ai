@@ -9,3 +9,15 @@ class Niche(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class GeneratedNewsletter(models.Model):
+    niche = models.ForeignKey(Niche, related_name='newsletters', on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Newsletter for {self.niche.name} at {self.created_at.strftime('%Y-%m-%d')}"

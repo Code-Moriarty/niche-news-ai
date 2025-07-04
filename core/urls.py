@@ -4,9 +4,14 @@ from . import views
 
 urlpatterns = [
     path("", views.home, name="home"),
+
+    # Auth
     path("signup/", views.SignUpView.as_view(), name="signup"),
     path("login/", auth_views.LoginView.as_view(template_name="core/login.html"), name="login"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+
+    # Niche detail (AI generation page)
+    path("niche/<int:pk>/", views.niche_detail, name="niche_detail"),
 ]
 
 

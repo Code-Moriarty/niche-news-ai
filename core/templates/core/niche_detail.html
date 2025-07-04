@@ -1,0 +1,19 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+  <a href="{% url 'home' %}">&larr; Back</a>
+  <article>
+    <h2>{{ niche.name }}</h2>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit">Generate Newsletter</button>
+    </form>
+  </article>
+
+  {% for newsletter in newsletters %}
+    <article>
+      <small>Created: {{ newsletter.created_at|date:"F j, Y, P" }}</small>
+      <div style="white-space: pre-line;">{{ newsletter.content }}</div>
+    </article>
+  {% endfor %}
+{% endblock %}
