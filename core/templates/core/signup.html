@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+  <article>
+    <h2 align="center">Create Your Niche News AI Account</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Sign Up</button>
+    </form>
+  </article>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+  <h2>Welcome, {{ user.username }}!</h2>
+  <p>This is your dashboard. Add a niche to get started.</p>
+
+  <article>
+    <h4 align="center">Add a New Niche</h4>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Save Niche</button>
+    </form>
+  </article>
+
+  {% if niches %}
+  <article>
+    <h4>Your Niches</h4>
+    <ul>
+      {% for niche in niches %}
+        <li>{{ niche.name }}</li>
+      {% endfor %}
+    </ul>
+  </article>
+  {% else %}
+  <p>No niches yet. Add your first one above.</p>
+  {% endif %}
+{% endblock %}
+
