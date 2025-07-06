@@ -1,3 +1,6 @@
+# core/views.py
+
+from django.contrib import messages # <-- Already here, good!
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views import generic
@@ -21,7 +24,12 @@ def home(request):
             niche = form.save(commit=False)
             niche.user = request.user
             niche.save()
+            messages.success(request, f"Niche '{niche.name}' added successfully!") # <-- Added success message
             return redirect('home')
+        else:
+            messages.error(request, "Failed to add niche. Please correct the errors below.") # <-- Added error message
+            # If the form is invalid, it will re-render with errors
+            # The message adds extra feedback.
     else:
         form = NicheForm()
 
@@ -33,10 +41,14 @@ def niche_detail(request, pk):
     niche = get_object_or_404(Niche, pk=pk, user=request.user)
 
     if request.method == 'POST':
+        # Assuming ai_service.generate_newsletter_content takes niche.name directly
         content = ai_service.generate_newsletter_content(niche.name)
         if not content.startswith("Error:"):
             GeneratedNewsletter.objects.create(niche=niche, content=content)
-        return redirect('niche_detail', pk=niche.pk)
+            messages.success(request, f"Newsletter for '{niche.name}' successfully generated!") # <-- Added success message
+        else:
+            messages.error(request, f"Failed to generate newsletter: {content}") # <-- Added error message
+        return redirect('niche_detail', pk=niche.pk) # Redirect to the same page to show message and new newsletter
 
     newsletters = niche.newsletters.all()
     return render(request, 'core/niche_detail.html', {'niche': niche, 'newsletters': newsletters})

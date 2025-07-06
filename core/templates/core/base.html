@@ -8,6 +8,16 @@
 </head>
 <body>
   <nav class="container-fluid">
+    {# This section displays Django messages #}
+{% if messages %}
+    <div role="alert" class="messages"> {# Added role="alert" and a class for potential styling #}
+        {% for message in messages %}
+            <article class="message {{ message.tags }}"> {# Pico.css might style <article> and .message #}
+                {{ message }}
+            </article>
+        {% endfor %}
+    </div>
+{% endif %}
     <ul>
       <li><a href="{% url 'home' %}"><strong>Niche News AI</strong></a></li>
     </ul>
