@@ -1,29 +1,49 @@
-{% extends "core/base.html" %}
+{# core/templates/core/home.html #}
+{% extends 'core/base.html' %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
-  <h2>Welcome, {{ user.username }}!</h2>
-  <p>This is your dashboard. Add a niche to get started.</p>
+<section>
+    <hgroup style="text-align: center;">
+        <h1>Your Niche News Dashboard</h1>
+        <p>Manage your niches and generate personalized newsletters.</p>
+    </hgroup>
 
-  <article>
-    <h4 align="center">Add a New Niche</h4>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Save Niche</button>
-    </form>
-  </article>
+    <article style="max-width: 800px; margin: 0 auto; padding: 40px;"> {# Increased padding #}
+        {# Create New Niche Section #}
+        <hgroup>
+            <h2>Create a New Niche</h2>
+            <p>Define your next area of interest to start generating news.</p>
+        </hgroup>
+        <form method="post" action="{% url 'home' %}" style="margin-bottom: 40px;"> {# Added margin-bottom #}
+            {% csrf_token %}
+            <label for="id_name">Niche Name:</label>
+            <input type="text" name="name" id="id_name" required class="form-control" placeholder="e.g., Quantum Computing Ethics">
+            <small>e.g., Artificial Intelligence in Healthcare, Sustainable Urban Planning</small>
+            <button type="submit" role="button">Add New Niche</button>
+        </form>
 
-  {% if niches %}
-  <article>
-    <h4>Your Niches</h4>
-    <ul>
-      {% for niche in niches %}
-        <li><a href="{% url 'niche_detail' pk=niche.pk %}">{{ niche.name }}</a></li>
-      {% endfor %}
-    </ul>
-  </article>
-  {% else %}
-  <p>No niches yet. Add your first one above.</p>
-  {% endif %}
+        <hr> {# A subtle divider for visual separation #}
+
+        {# Your Existing Niches Section #}
+        <hgroup>
+            <h2>Your Existing Niches</h2>
+            <p>Click on a niche to view details and generate newsletters.</p>
+        </hgroup>
+        {% if niches %}
+            <ul style="list-style: none; padding: 0; margin-top: 20px;"> {# Added margin-top for list #}
+                {% for niche in niches %}
+                    <li style="margin-bottom: 15px; border-bottom: 1px solid var(--pico-muted-border-color); padding-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3>{{ niche.name }}</h3>
+                            <a href="{% url 'niche_detail' niche.pk %}" role="button" class="secondary outline">View / Generate News</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>You haven't created any niches yet. Get started by adding one!</p>
+        {% endif %}
+    </article>
+</section>
 {% endblock %}
-
