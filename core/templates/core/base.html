@@ -9,33 +9,85 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <script data-goatcounter="https://codemoriarty.goatcounter.com/count"
             async src="//gc.zgo.at/count.js"></script>
+
+  {# CSS for fixed messages, fade-out, and custom delete button style #}
+  <style>
+      /* NEW: Styling for the fixed message overlay container */
+      .messages-overlay {
+          position: fixed; /* Takes it out of normal document flow */
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 1000; /* Ensures it's above other content */
+          padding-top: var(--pico-block-spacing-vertical, 1.5rem); /* Top padding */
+          padding-bottom: var(--pico-block-spacing-vertical, 1.5rem); /* Bottom padding */
+          background-color: var(--pico-background-color); /* Match page background for visual consistency */
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow below messages */
+          text-align: center; /* Center the message text */
+          transition: opacity 0.3s ease-out; /* Smooth transition for showing/hiding container */
+      }
+
+      /* Style for individual messages within the overlay */
+      .messages-overlay .message {
+          margin-left: auto;
+          margin-right: auto;
+          max-width: 800px; /* Constrain message width */
+          /* Pico's alert padding is already good */
+      }
+
+      /* Fade-out effect for individual messages */
+      .fade-out {
+          opacity: 0;
+          transition: opacity 0.5s ease-out; /* Smooth fade-out for individual message */
+          pointer-events: none; /* Prevent interaction while fading */
+      }
+
+      /* Comprehensive custom styling for the delete button (from previous steps) */
+      .delete-button {
+          border: none !important;
+          background: none !important;
+          color: var(--pico-del-color) !important;
+          padding: 0.5rem !important;
+      }
+
+      .delete-button:hover {
+          background-color: rgba(var(--pico-del-rgb), 0.1) !important;
+          border-color: transparent !important;
+          border-radius: var(--pico-border-radius) !important;
+          outline: none !important;
+          box-shadow: none !important;
+      }
+
+      .delete-button:focus-visible {
+          outline: none !important;
+          border-color: transparent !important;
+          background-color: rgba(var(--pico-del-rgb), 0.1) !important;
+          box-shadow: 0 0 0 2px rgba(var(--pico-del-rgb), 0.5),
+                      0 0 0 5px rgba(var(--pico-del-rgb), 0.2) !important;
+          border-radius: var(--pico-border-radius) !important;
+      }
+  </style>
 </head>
 <body>
+  {# NEW: Moved messages container outside nav and made it fixed #}
+  <div role="alert" class="messages-overlay">
+      {% for message in messages %}
+          <article class="message {{ message.tags }}">
+              {{ message }}
+          </article>
+      {% endfor %}
+  </div>
+
   <nav class="container-fluid">
-    {# This section displays Django messages #}
-{% if messages %}
-    <div role="alert" class="messages">
-        {% for message in messages %}
-            <article class="message {{ message.tags }}">
-                {{ message }}
-            </article>
-        {% endfor %}
-    </div>
-{% endif %}
     <ul>
       <li><a href="{% url 'home' %}" class="contrast"><strong>Niche News AI</strong></a></li>
     </ul>
     <ul>
       {% if user.is_authenticated %}
-        {# Adjusted top to -10px for a slightly lower position from previous -12px #}
-        <li><a style="cursor: default; text-decoration: none; color: inherit; vertical-align: middle; position: relative; top: -10px; left: 5px;">Hi, {{ user.username }}</a></li>
         <li>
-          <form action="{% url 'logout' %}" method="post" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" class="secondary" style="border:none;background:none; vertical-align: middle;" aria-label="Logout">
-              <i class="fas fa-right-from-bracket" style="position: relative; top: 2px;"></i>
-            </button>
-          </form>
+          <a href="{% url 'profile' %}" role="button" class="contrast outline" style="border:none;background:none; display: flex; align-items: center; justify-content: center; padding: var(--pico-nav-item-padding-y) var(--pico-nav-item-padding-x);">
+             <i class="fas fa-circle-user fa-2x"></i> {# Profile Icon #}
+          </a>
         </li>
       {% else %}
         {% if request.path != '/accounts/login/' %}
@@ -50,5 +102,45 @@
   <main class="container">
     {% block content %}{% endblock %}
   </main>
+
+  {# JavaScript for auto-dismissing messages #}
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          const messagesOverlay = document.querySelector('.messages-overlay'); // Select the new fixed container
+
+          // Initially hide the overlay if no messages are present on page load
+          if (messagesOverlay && messagesOverlay.querySelectorAll('article.message').length === 0) {
+              messagesOverlay.style.display = 'none';
+          } else if (messagesOverlay) {
+              // If messages are present, ensure it's visible initially
+              messagesOverlay.style.display = 'block';
+              messagesOverlay.style.opacity = '1';
+          }
+
+          if (messagesOverlay) {
+              const messages = messagesOverlay.querySelectorAll('article.message');
+
+              messages.forEach(message => {
+                  setTimeout(() => {
+                      message.classList.add('fade-out'); // Start fading out the individual message
+                      message.addEventListener('transitionend', function handler() {
+                          message.remove(); // Remove the individual message from DOM
+
+                          // After a message is removed, check if the overlay is now empty
+                          if (messagesOverlay.querySelectorAll('article.message').length === 0) {
+                              messagesOverlay.style.opacity = '0'; // Fade out the entire overlay
+                              messagesOverlay.addEventListener('transitionend', function handler2() {
+                                  messagesOverlay.style.display = 'none'; // Hide completely after fade
+                                  messagesOverlay.style.opacity = '1'; // Reset opacity for next time
+                                  messagesOverlay.removeEventListener('transitionend', handler2); // Clean up
+                              }, { once: true }); // Ensure handler runs only once
+                          }
+                          message.removeEventListener('transitionend', handler); // Clean up individual message handler
+                      }, { once: true }); // Ensure individual message handler runs only once
+                  }, 3000); // 3 seconds delay before fading starts
+              });
+          }
+      });
+  </script>
 </body>
 </html>

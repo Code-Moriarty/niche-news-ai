@@ -28,15 +28,33 @@
         {# Your Existing Niches Section #}
         <hgroup>
             <h2>Your Existing Niches</h2>
-            <p>Click on a niche to view details and generate newsletters.</p>
+            <p>Click on a niche to view details and generate newsletters, or remove old ones.</p>
         </hgroup>
         {% if niches %}
-            <ul style="list-style: none; padding: 0; margin-top: 20px;"> {# Added margin-top for list #}
+            <ul style="list-style: none; padding: 0; margin-top: 20px;">
                 {% for niche in niches %}
                     <li style="margin-bottom: 15px; border-bottom: 1px solid var(--pico-muted-border-color); padding-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <h3>{{ niche.name }}</h3>
-                            <a href="{% url 'niche_detail' niche.pk %}" role="button" class="secondary outline">View / Generate News</a>
+                            {# Niche Name - clickable and prominent #}
+                            <h3 style="margin-bottom: 0; margin-right: var(--pico-spacing-sm);">
+                                <a href="{% url 'niche_detail' niche.pk %}" style="text-decoration: none; color: inherit;">
+                                    {{ niche.name }}
+                                </a>
+                            </h3>
+                            
+                            {# Container for the two action buttons - UPDATED GAP AND MARGIN #}
+                            <div style="display: flex; gap: 1rem; align-items: center;">
+                                {# View / Generate News Button #}
+                                <a href="{% url 'niche_detail' niche.pk %}" role="button" class="secondary outline" style="flex-shrink: 0; margin-right: 0.5rem;">View / Generate News</a>
+                                
+                                {# Delete Form with Trash Icon #}
+                                <form action="{% url 'delete_niche' niche.pk %}" method="post" style="margin-bottom: 0; flex-shrink: 0;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="contrast outline delete-button" style="border: none; background: none; color: var(--pico-del-color); padding: 0.5rem;" aria-label="Delete Niche {{ niche.name }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </li>
                 {% endfor %}
