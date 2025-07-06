@@ -21,7 +21,7 @@
     </div>
 {% endif %}
     <ul>
-      <li><a href="{% url 'home' %}"><strong>Niche News AI</strong></a></li>
+      <li><a href="{% url 'home' %}" class="contrast"><strong>Niche News AI</strong></a></li> {# Changed to home as per your nav #}
     </ul>
     <ul>
       {% if user.is_authenticated %}
@@ -33,8 +33,14 @@
           </form>
         </li>
       {% else %}
+        {# Only show Login link if not currently on the login page #}
+        {% if request.path != '/accounts/login/' %}
         <li><a href="{% url 'login' %}">Login</a></li>
+        {% endif %}
+        {# Only show Sign Up link if not currently on the signup page #}
+        {% if request.path != '/signup/' %}
         <li><a href="{% url 'signup' %}" role="button">Sign Up</a></li>
+        {% endif %}
       {% endif %}
     </ul>
   </nav>

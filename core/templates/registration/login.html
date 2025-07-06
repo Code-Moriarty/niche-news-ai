@@ -1,0 +1,47 @@
+{# registration/login.html #}
+{% extends 'core/base.html' %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<main class="container">
+    {# This div will center the article and control its max-width #}
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <article>
+            <hgroup style="text-align: center;"> {# Centers the text within the hgroup #}
+                <h1>Login</h1>
+                <p>Access your Niche News AI dashboard.</p>
+            </hgroup>
+            <form method="post">
+                {% csrf_token %}
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                <input
+                    type="text"
+                    name="{{ form.username.html_name }}"
+                    id="{{ form.username.id_for_label }}"
+                    value="{{ form.username.value|default_if_none:'' }}"
+                    class="form-control" {# Pico.css class for inputs #}
+                    required
+                >
+                {% if form.username.errors %}
+                    <small>{{ form.username.errors }}</small>
+                {% endif %}
+
+                <label for="{{ form.password.id_for_label }}">Password</label>
+                <input
+                    type="password"
+                    name="{{ form.password.html_name }}"
+                    id="{{ form.password.id_for_label }}"
+                    class="form-control" {# Pico.css class for inputs #}
+                    required
+                >
+                {% if form.password.errors %}
+                    <small>{{ form.password.errors }}</small>
+                {% endif %}
+
+                <button type="submit" role="button">Login</button>
+            </form>
+            <p style="text-align: center;">Don't have an account? <a href="{% url 'signup' %}">Sign up here</a>.</p>
+        </article>
+    </div>
+</main>
+{% endblock %}
