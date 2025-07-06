@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+{% block title %}Server Error{% endblock %}
+
+{% block content %}
+<main class="container">
+    <article class="grid">
+        <div>
+            <hgroup>
+                <h1>500 - Internal Server Error</h1>
+                <p>Something went wrong on our end.</p>
+            </hgroup>
+            <p>We're working to fix it! Please try again later.</p>
+            <p><a href="{% url 'home' %}" role="button">Go to Homepage</a></p>
+        </div>
+        <div>
+            {# You could add an image or illustration here later if you want #}
+            <p style="text-align: center; font-size: 8em; line-height: 1;">&#x1F6A7;</p> {# 🚧 emoji #}
+        </div>
+    </article>
+</main>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+{% block title %}Page Not Found{% endblock %}
+
+{% block content %}
+<main class="container">
+    <article class="grid">
+        <div>
+            <hgroup>
+                <h1>404 - Page Not Found</h1>
+                <p>Oops! The page you're looking for doesn't exist.</p>
+            </hgroup>
+            <p>It might have been moved or deleted.</p>
+            <p><a href="{% url 'home' %}" role="button">Go to Homepage</a></p>
+        </div>
+        <div>
+            {# You could add an image or illustration here later if you want #}
+            <p style="text-align: center; font-size: 8em; line-height: 1;">&#x1F6AB;</p> {# 🚫 emoji #}
+        </div>
+    </article>
+</main>
+{% endblock %}
