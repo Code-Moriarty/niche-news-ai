@@ -28,7 +28,12 @@ SECRET_KEY = 'django-insecure-4i+-60#xpd+d+1glflw61bzl8o2)501k72nu3!)@xoivmxxo5@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',        # For local development
+    'localhost',        # For local development
+    'codemoriarty.pythonanywhere.com', # Your PythonAnywhere domain
+    # Add any other domains if you ever point a custom domain here
+]
 
 
 # Application definition
